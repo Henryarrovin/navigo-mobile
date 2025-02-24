@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 7240 3510" xmlns:bx="https://boxy-svg.com">
+  <defs>
+    <bx:export>
+      <bx:file format="svg" href="#object-0"/>
+    </bx:export>
+  </defs>
+  <g id="object-0">
+    <rect x="-0.001" y="-1.43" width="230" height="3510" style="fill: rgb(216, 216, 216); stroke: rgb(0, 0, 0);"/>
+    <rect x="3.777" width="6010" height="230" style="fill: rgb(216, 216, 216); stroke: rgb(0, 0, 0);"/>
+    <rect y="513.523" width="230" height="2600" style="fill: rgb(216, 216, 216); stroke: rgb(0, 0, 0);" x="7010"/>
+    <rect y="508.524" width="770" height="230" style="fill: rgb(216, 216, 216); stroke: rgb(0, 0, 0);" x="6470"/>
+    <rect y="2885.52" width="770" height="230" style="fill: rgb(216, 216, 216); stroke: rgb(0, 0, 0);" x="6470"/>
+    <rect x="3.777" width="6700" height="230" style="fill: rgb(216, 216, 216); stroke: rgb(0, 0, 0);" y="3280"/>
+    <rect x="6468.51" y="2880.34" width="241.699" height="625.901" style="fill: rgb(216, 216, 216); stroke: rgb(0, 0, 0);"/>
+    <rect x="6468.51" width="230" height="737.042" style="fill: rgb(216, 216, 216); stroke: rgb(0, 0, 0);"/>
+    <rect x="6451.11" y="903.195" width="467.963" height="503.06" style="fill: rgb(216, 216, 216); stroke: rgb(0, 0, 0);"/>
+    <rect x="6456.96" y="2248.59" width="467.963" height="503.06" style="fill: rgb(216, 216, 216); stroke: rgb(0, 0, 0);"/>
+    <rect x="4105.45" y="236.348" width="1245.95" height="2400" style="fill: rgb(216, 216, 216); stroke: rgb(0, 0, 0);"/>
+    <rect x="238.909" y="873.947" width="637.599" height="1766.56" style="fill: rgb(216, 216, 216); stroke: rgb(0, 0, 0);"/>
+    <ellipse style="fill: rgb(216, 216, 216); stroke: rgb(0, 0, 0);" cx="3233.3" cy="886.022" rx="529.383" ry="529.383"/>
+    <rect x="2496.83" y="1705.03" width="1614.47" height="930.076" style="fill: rgb(216, 216, 216); stroke: rgb(0, 0, 0);"/>
+  </g>
+</svg>
