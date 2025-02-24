@@ -5,7 +5,7 @@ import MapScreen from "./map";
 
 const Tab = createBottomTabNavigator();
 
-export default function TabsLayout() {
+const TabsLayout = () => {
   return (
     <Tab.Navigator
       id={undefined}
@@ -34,3 +34,5 @@ export default function TabsLayout() {
     </Tab.Navigator>
   );
 }
+
+export default TabsLayout;

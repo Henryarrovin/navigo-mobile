@@ -4,7 +4,7 @@ import Animated, { useSharedValue, useAnimatedStyle, withTiming, withSpring } fr
 import MapSvg from "../../../src/assets/maps/map_layout.svg";
 import PathMarkerSvg from "../../../src/assets/maps/location-pointer.svg";
 
-export default function MapScreen() {
+const MapScreen = () => {
   const scale = useSharedValue(1);
   const translateX = useSharedValue(0);
   const translateY = useSharedValue(0);
@@ -52,3 +52,5 @@ export default function MapScreen() {
     </GestureHandlerRootView>
   );
 }
+
+export default MapScreen;
