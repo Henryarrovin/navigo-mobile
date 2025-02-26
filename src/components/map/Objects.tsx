@@ -7,7 +7,7 @@ interface ObjectsProps {
 
 const Objects = ({ handleObjectTouch }: ObjectsProps) => {
   return (
-    <G id="Objects" fill="#d8d8d8" stroke="black">
+    <G id="Objects" fill="red" stroke="black">
       <Path 
         d="M-0.001 -1.43H229.999V3508.57H-0.001z" 
         onPressIn={() => handleObjectTouch("Object1")} 

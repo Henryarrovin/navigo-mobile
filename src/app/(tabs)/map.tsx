@@ -1,21 +1,22 @@
+import React, { useContext, useEffect, useState } from "react";
 import { View } from "react-native";
 import { Gesture, GestureDetector, GestureHandlerRootView } from "react-native-gesture-handler";
 import Animated, { useSharedValue, useAnimatedStyle, withTiming, withSpring } from "react-native-reanimated";
-import MapSvg from "../../../src/assets/maps/map_layout.svg";
-import PathMarkerSvg from "../../../src/assets/maps/location-pointer.svg";
+import IndoorMapWrapper from "@/components/IndoorMapWrapper";
+import NavigationContext from "../contexts/NavigationContext";
+import MapDataContext from "../contexts/MapDataContext";
 
 const MapScreen = () => {
+  const { navigation } = useContext(NavigationContext);
+  const { objects } = useContext(MapDataContext);
+  
   const scale = useSharedValue(1);
   const translateX = useSharedValue(0);
   const translateY = useSharedValue(0);
 
   const pinchGesture = Gesture.Pinch()
-    .onUpdate((event) => {
-      scale.value = event.scale;
-    })
-    .onEnd(() => {
-      scale.value = withTiming(Math.max(1, Math.min(scale.value, 3)));
-    });
+    .onUpdate((event) => { scale.value = event.scale; })
+    .onEnd(() => { scale.value = withTiming(Math.max(1, Math.min(scale.value, 3))); });
 
   const panGesture = Gesture.Pan()
     .onUpdate((event) => {
@@ -29,7 +30,7 @@ const MapScreen = () => {
 
   const combinedGesture = Gesture.Simultaneous(pinchGesture, panGesture);
 
-  const animatedContainerStyle = useAnimatedStyle(() => ({
+  const animatedStyle = useAnimatedStyle(() => ({
     transform: [
       { translateX: translateX.value },
       { translateY: translateY.value },
@@ -38,19 +39,16 @@ const MapScreen = () => {
   }));
 
   return (
-    <GestureHandlerRootView className="flex-1 bg-white">
-      <GestureDetector gesture={combinedGesture}>
-        <View className="flex-1 items-center justify-center">
-          <Animated.View style={animatedContainerStyle}>
-            <MapSvg width={400} height={600} />
-            <View style={{ position: "absolute", top: 200, left: 150 }}>
-              <PathMarkerSvg width={40} height={40} />
-            </View>
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <View style={{ flex: 1 }}>
+        <GestureDetector gesture={combinedGesture}>
+          <Animated.View style={[animatedStyle, { flex: 1 }]}>
+            <IndoorMapWrapper />
           </Animated.View>
-        </View>
-      </GestureDetector>
+        </GestureDetector>
+      </View>
     </GestureHandlerRootView>
-  );
-}
+  );  
+};
 
 export default MapScreen;
