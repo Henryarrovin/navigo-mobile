@@ -1,33 +1,32 @@
-export interface Vector3D {
+export interface ICoordinates {
   x: number;
   y: number;
-  z: number;
 }
 
-export interface SensorData {
-  accelerometer: Vector3D;
-  gyroscope: Vector3D;
-  magnetometer: Vector3D;
-  timestamp: number;
+export interface ILocation {
+  coordinates: ICoordinates;
+  zone: string;
 }
 
-export interface PDRData {
-  position: {
-    x: number;
-    y: number;
-  };
-  heading: number;
-  rotation: number;
-  stepCount: number;
-  distance: string;
-  positionHistory: Array<{ x: number; y: number }>;
+export interface IProduct {
+  name: string;
+  category: string;
+  description: string;
+  price: number;
+  image: string;
+  location: ILocation;
 }
 
-export interface PDRHookReturn {
-  position: { x: number; y: number };
-  heading: number;
-  steps: number;
-  distance: string;
-  error: string | null;
-  isLoading: boolean;
+export interface ICategory {
+  name: string;
+}
+
+export interface IApiResponse<T> {
+  message?: string;
+  error?: string;
+  product?: IProduct;
+  category?: ICategory;
+  products?: IProduct[];
+  categories?: ICategory[];
+  data?: T;
 }
