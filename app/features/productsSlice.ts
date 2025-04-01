@@ -2,11 +2,23 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { IProduct } from '../types/types';
 import apiService from '@/services/apiService';
 
-export const fetchProducts = createAsyncThunk<IProduct[]>(
+interface FetchProductsArgs {
+  page: number;
+  limit: number;
+}
+
+export const fetchProducts = createAsyncThunk(
   'products/fetchProducts',
-  async () => {
-    const response = await apiService.get('/products');
-    return response.data;
+  async ({ page, limit }: FetchProductsArgs, { rejectWithValue }) => {
+    try {
+      const response = await apiService.get(`/products?page=${page}&limit=${limit}`);
+      return {
+        products: response.data.data,
+        pagination: response.data.pagination
+      }
+    } catch (error: any) {
+      return rejectWithValue(error.response?.data?.message || 'Failed to fetch products');
+    }
   }
 );
 
@@ -28,16 +40,34 @@ export const fetchProductsByCategory = createAsyncThunk<IProduct[], string>(
   }
 );
 
+interface PaginationState {
+  page: number;
+  limit: number;
+  total: number;
+  totalPages: number;
+  hasNextPage: boolean;
+  hasPrevPage: boolean;
+}
+
 interface ProductsState {
   products: IProduct[];
   loading: boolean;
   error: string | null;
+  pagination: PaginationState;
 }
 
 const initialState: ProductsState = {
   products: [],
   loading: false,
   error: null,
+  pagination: {
+    page: 1,
+    limit: 10,
+    total: 0,
+    totalPages: 1,
+    hasNextPage: false,
+    hasPrevPage: false,
+  },
 };
 
 const productsSlice = createSlice({
@@ -48,20 +78,23 @@ const productsSlice = createSlice({
       state.products = [];
       state.loading = false;
       state.error = null;
+      state.pagination = initialState.pagination;
     },
   },
   extraReducers: (builder) => {
     builder
       .addCase(fetchProducts.pending, (state) => {
         state.loading = true;
+        state.error = null;
       })
       .addCase(fetchProducts.fulfilled, (state, action) => {
         state.loading = false;
-        state.products = action.payload;
+        state.products = action.payload.products;
+        state.pagination = action.payload.pagination;
       })
       .addCase(fetchProducts.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.error.message || 'Failed to fetch products';
+        state.error = action.payload as string || 'Failed to fetch products';
       })
 
       .addCase(fetchProductsByCategory.pending, (state) => {
