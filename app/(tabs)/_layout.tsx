@@ -16,7 +16,7 @@ const TabsLayout = () => {
       // }}
       screenOptions={({ route }) => ({
         headerTitle: route.name,
-        headerStyle: { backgroundColor: '#333333' },
+        headerStyle: { backgroundColor: 'black' },
         headerTintColor: '#ffffff',
       })}
     >
