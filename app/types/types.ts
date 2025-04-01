@@ -9,6 +9,7 @@ export interface ILocation {
 }
 
 export interface IProduct {
+  _id: string;
   name: string;
   category: string;
   description: string;
@@ -18,6 +19,7 @@ export interface IProduct {
 }
 
 export interface ICategory {
+  _id: string;
   name: string;
 }
 
