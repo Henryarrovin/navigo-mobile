@@ -1,43 +1,32 @@
-import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { Ionicons } from "@expo/vector-icons";
-import HomeScreen from "./home";
-import MapScreen from "./map";
+import { Tabs } from 'expo-router';
+import { Ionicons } from '@expo/vector-icons';
 
-const Tab = createBottomTabNavigator();
-
-const TabsLayout = () => {
+export default function TabLayout() {
   return (
-    <Tab.Navigator
-      id={undefined}
-      // screenOptions={{
-      //   headerShown: true,
-      //   tabBarActiveTintColor: "blue",
-      //   tabBarInactiveTintColor: "gray",
-      // }}
-      screenOptions={({ route }) => ({
-        headerTitle: route.name,
-        headerStyle: { backgroundColor: 'black' },
-        headerTintColor: '#ffffff',
-      })}
-    >
-      <Tab.Screen
-        name="Home"
-        component={HomeScreen}
+    <Tabs screenOptions={{
+      headerTitle: "Navigo",
+      // headerStyle: { backgroundColor: 'black' },
+      // headerTintColor: "#ffffff"
+      // headerShown: false
+    }}>
+      <Tabs.Screen
+        name="home"
         options={{
-          title: "Home",
-          tabBarIcon: ({ color, size }) => <Ionicons name="home-outline" size={size} color={color} />,
+          title: 'Home',
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="home-outline" size={size} color={color} />
+          ),
         }}
       />
-      <Tab.Screen
-        name="Map"
-        component={MapScreen}
+      <Tabs.Screen
+        name="map"
         options={{
-          title: "Map",
-          tabBarIcon: ({ color, size }) => <Ionicons name="map-outline" size={size} color={color} />,
+          title: 'Map',
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="map-outline" size={size} color={color} />
+          ),
         }}
       />
-    </Tab.Navigator>
+    </Tabs>
   );
 }
-
-export default TabsLayout;

@@ -8,17 +8,7 @@ import {
   TouchableOpacity
 } from 'react-native';
 import { IProduct } from '../types/types';
-import { useNavigation } from '@react-navigation/native';
-import { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
-
-type RootTabParamList = {
-  Home: undefined;
-  Map: { 
-    x: number;
-    y: number;
-    title: string;
-  };
-};
+import { useRouter } from 'expo-router';
 
 interface ProductModalProps {
   visible: boolean;
@@ -27,7 +17,9 @@ interface ProductModalProps {
 }
 
 const ProductModal: React.FC<ProductModalProps> = ({ visible, product, onClose }) => {
-  const navigation = useNavigation<BottomTabNavigationProp<RootTabParamList>>();
+  // const navigation = useNavigation<BottomTabNavigationProp<RootTabParamList>>();
+
+  const router = useRouter();
 
   if (!product) return null;
 
@@ -36,13 +28,36 @@ const ProductModal: React.FC<ProductModalProps> = ({ visible, product, onClose }
     product.location?.coordinates?.y
   );
 
-  const handleViewOnMap = () => {
-    if (!hasLocation) return;
+  // const handleViewOnMap = () => {
+  //   // if (!hasLocation) return;
+  //   if (!product?.location?.coordinates) return;
     
-    navigation.navigate('Map', {
-      x: product.location.coordinates.x,
-      y: product.location.coordinates.y,
-      title: product.name
+  //   // navigation.navigate('Map', {
+  //   //   x: product.location.coordinates.x,
+  //   //   y: product.location.coordinates.y,
+  //   //   title: product.name
+  //   // });
+  //   router.push({
+  //     pathname: '/map',
+  //     params: {
+  //       x: product.location.coordinates.x,
+  //       y: product.location.coordinates.y,
+  //       title: product.name
+  //     }
+  //   });
+  //   onClose();
+  // };
+
+  const handleViewOnMap = () => {
+    if (!product?.location?.coordinates) return;
+    
+    router.push({
+      pathname: '/map',
+      params: {
+        x: product.location.coordinates.x.toString(),
+        y: product.location.coordinates.y.toString(),
+        title: product.name
+      }
     });
     onClose();
   };
