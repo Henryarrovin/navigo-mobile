@@ -16,7 +16,7 @@ interface ProductModalProps {
   onClose: () => void;
 }
 
-const ProductModal: React.FC<ProductModalProps> = ({ visible, product, onClose }) => {
+const ProductModal = ({ visible, product, onClose }: ProductModalProps) => {
   // const navigation = useNavigation<BottomTabNavigationProp<RootTabParamList>>();
 
   const router = useRouter();
@@ -51,8 +51,8 @@ const ProductModal: React.FC<ProductModalProps> = ({ visible, product, onClose }
   const handleViewOnMap = () => {
     if (!product?.location?.coordinates) return;
     
-    router.push({
-      pathname: '/map',
+    router.replace({
+      pathname: '/(tabs)/map',
       params: {
         x: product.location.coordinates.x.toString(),
         y: product.location.coordinates.y.toString(),

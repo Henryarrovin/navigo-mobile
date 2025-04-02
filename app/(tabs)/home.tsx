@@ -63,17 +63,13 @@ const HomeScreen = () => {
     }
   };
 
-  // const handleCategoryClick = (categoryId: string, categoryName: string) => {
-  //   router.push({ 
-  //     pathname: `/category/[categoryId]`, 
-  //     params: { categoryId, categoryName } 
-  //   });
-  // };
-
   const handleCategoryClick = (categoryId: string, categoryName: string) => {
     router.push({
-      pathname: `/category/[categoryId]`,
-      params: { categoryId, categoryName }
+      pathname: '/category/[categoryId]',
+      params: { 
+        categoryId, 
+        categoryName
+      }
     });
   };
 
@@ -214,6 +210,8 @@ const HomeScreen = () => {
         refreshControl={
           <RefreshControl
             refreshing={refreshing}
+            progressBackgroundColor="#EFF6FF"
+            tintColor="#3B82F6"
             onRefresh={onRefresh}
           />
         }
