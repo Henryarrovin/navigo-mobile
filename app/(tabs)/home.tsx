@@ -290,7 +290,7 @@ const HomeScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f0f0f0',
+    backgroundColor: '#D4D4D4',
   },
   fullScreenLoader: {
     flex: 1,

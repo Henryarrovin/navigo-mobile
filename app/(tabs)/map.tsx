@@ -1,9 +1,10 @@
 import { SafeAreaView, StyleSheet, Text, View } from "react-native";
+import Map from "../components/map/Map";
 
 const MapScreen = () => {
     return (
       <SafeAreaView style={styles.container}>
-        <Text style={styles.text}>Map</Text>
+        <Map />
       </SafeAreaView>
     );
 }
@@ -11,13 +12,11 @@ const MapScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'gray',
-    alignItems: 'center',
     justifyContent: 'center',
+    alignItems: 'center',
+    padding: 10,
+    backgroundColor: '#D4D4D4',
   },
-  text: {
-    color: 'blue',
-  }
 });
 
 export default MapScreen;
