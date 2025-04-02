@@ -1,19 +1,24 @@
 import { IProduct } from '@/app/types/types';
 import React from 'react';
-import { View, Text, Image, StyleSheet } from 'react-native';
+import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
 
 interface ProductCardProps {
   product: IProduct;
+  onPress: () => void;
 }
 
-const ProductCard = ({ product }: ProductCardProps) => {
+const ProductCard = ({ product, onPress }: ProductCardProps) => {
   if (!product || !product.name || !product.category) {
     console.error("Invalid product data:", product);
     return null;
   }
 
   return (
-    <View style={styles.card}>
+    <TouchableOpacity
+      style={styles.card} 
+      onPress={onPress}
+      activeOpacity={0.8}
+    >
       <View style={styles.content}>
         {product.image && (
           <Image source={{ uri: product.image }} style={styles.image} />
@@ -22,7 +27,7 @@ const ProductCard = ({ product }: ProductCardProps) => {
         {/* category name */}
         {/* <Text style={styles.category}>Category: {categoryName}</Text> */}
       </View>
-    </View>
+    </TouchableOpacity>
   );
 };
 

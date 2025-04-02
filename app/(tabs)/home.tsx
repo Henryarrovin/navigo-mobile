@@ -16,6 +16,8 @@ import { useDispatch } from 'react-redux';
 import { fetchProducts } from '../features/productsSlice';
 import { AppDispatch } from '../features/store';
 import { useIsFocused } from '@react-navigation/native';
+import { IProduct } from '../types/types';
+import ProductModal from '../modal/ProductModal';
 
 const HomeScreen = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -33,6 +35,8 @@ const HomeScreen = () => {
   } = useProductsAndCategories();
 
   const [refreshing, setRefreshing] = React.useState(false);
+  const [selectedProduct, setSelectedProduct] = React.useState<IProduct | null>(null);
+  const [modalVisible, setModalVisible] = React.useState(false);
 
   useEffect(() => {
     if (isFocused) {
@@ -64,6 +68,11 @@ const HomeScreen = () => {
       pathname: `/category/[categoryId]`, 
       params: { categoryId, categoryName } 
     });
+  };
+
+  const handleProductPress = (product: IProduct) => {
+    setSelectedProduct(product);
+    setModalVisible(true);
   };
 
   const renderPageNumbers = () => {
@@ -192,7 +201,7 @@ const HomeScreen = () => {
       <FlatList
         data={products}
         keyExtractor={(item) => item._id}
-        renderItem={({ item }) => <ProductCard product={item} />}
+        renderItem={({ item }) => <ProductCard product={item} onPress={() => handleProductPress(item)} />}
         numColumns={2}
         columnWrapperStyle={styles.row}
         refreshControl={
@@ -282,6 +291,11 @@ const HomeScreen = () => {
           styles.listContent,
           products.length === 0 && styles.emptyListContent
         ]}
+      />
+      <ProductModal
+        visible={Boolean(selectedProduct)}
+        product={selectedProduct}
+        onClose={() => setSelectedProduct(null)}
       />
     </View>
   );

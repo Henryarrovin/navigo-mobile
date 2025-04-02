@@ -1,7 +1,22 @@
+import { RouteProp, useRoute } from "@react-navigation/native";
 import { Dimensions, ScrollView, StyleSheet, Text, View } from "react-native";
-import Svg, { Path, Line, G } from 'react-native-svg';
+import Svg, { Path, Line, G, Circle } from 'react-native-svg';
+
+type RootTabParamList = {
+  Home: undefined;
+  Map: { 
+    x: number;
+    y: number;
+    title: string;
+  };
+};
+
+type MapRouteProp = RouteProp<RootTabParamList, 'Map'>;
 
 const Map = () => {
+    const route = useRoute<MapRouteProp>();
+    const { x, y, title } = route.params || {};
+
     const { width } = Dimensions.get('window');
     const svgWidth = width - 40;  // SVG width based on screen width
     const svgHeight = (svgWidth * 600) / 800;  // Maintain aspect ratio for height
@@ -91,13 +106,31 @@ const Map = () => {
             >
                 <View style={styles.mapWrapper}>
                     <Svg width={svgWidth} height={svgHeight} viewBox="0 0 800 600">
-                    {renderGrid()}
-                    <Path id="zone1" d="M100,100 L400,100 L400,400 L100,400 Z" fill="#e1f5fe" stroke="#0288d1" strokeWidth="2"/>
-                    <Path id="zone2" d="M400,100 L700,100 L700,250 L400,250 Z" fill="#e8f5e9" stroke="#388e3c" strokeWidth="2"/>
-                    <Path id="zone3" d="M400,250 L700,250 L700,400 L400,400 Z" fill="#fff3e0" stroke="#fb8c00" strokeWidth="2"/>
-                    <Path d="M400,175 L400,225" stroke="#000" strokeWidth="3" strokeDasharray="5,5"/>
-                    <Path d="M400,325 L400,375" stroke="#000" strokeWidth="3" strokeDasharray="5,5"/>
+                        {renderGrid()}
+                        <Path id="zone1" d="M100,100 L400,100 L400,400 L100,400 Z" fill="#e1f5fe" stroke="#0288d1" strokeWidth="2"/>
+                        <Path id="zone2" d="M400,100 L700,100 L700,250 L400,250 Z" fill="#e8f5e9" stroke="#388e3c" strokeWidth="2"/>
+                        <Path id="zone3" d="M400,250 L700,250 L700,400 L400,400 Z" fill="#fff3e0" stroke="#fb8c00" strokeWidth="2"/>
+                        <Path d="M400,175 L400,225" stroke="#000" strokeWidth="3" strokeDasharray="5,5"/>
+                        <Path d="M400,325 L400,375" stroke="#000" strokeWidth="3" strokeDasharray="5,5"/>
+                        {/* Product Marker */}
+                        {x && y && (
+                            <Circle
+                                cx={x}
+                                cy={y}
+                                r="10"
+                                fill="#ff0000"
+                                stroke="#ffffff"
+                                strokeWidth="2"
+                            />
+                        )}
                     </Svg>
+                    {x && y && (
+                      <View style={styles.coordinateInfo}>
+                        <Text style={styles.coordinateTitle}>{title || 'Product Location'}</Text>
+                        <Text style={styles.coordinateText}>X Coordinate: {x}</Text>
+                        <Text style={styles.coordinateText}>Y Coordinate: {y}</Text>
+                      </View>
+                    )}
                 </View>
             </ScrollView>
         </View>
