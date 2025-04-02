@@ -6,11 +6,15 @@ import {
   Text, 
   View,
   TouchableOpacity,
-  ActivityIndicator
+  ActivityIndicator,
+  Button,
 } from 'react-native';
 import Svg, { Path, Line, G, Circle, Polyline } from 'react-native-svg';
 import { useLocalSearchParams } from 'expo-router';
 import useMap from '@/app/hooks/useMap';
+import usePdr from '@/app/hooks/usePdr';
+import { useSelector } from 'react-redux';
+import { RootState } from '@/app/features/store';
 
 const Map = () => {
   const params = useLocalSearchParams();
@@ -18,6 +22,10 @@ const Map = () => {
   const svgWidth = width - 40;
   const svgHeight = (svgWidth * 600) / 800;
   const gridSize = 50;
+
+  const { startPdrTracking, stopPdrTracking } = usePdr();
+  const pdrData = useSelector((state: RootState) => state.map.pdrData);
+  const isTracking = useSelector((state: RootState) => state.map.isTracking);
 
   const {
     zones,
@@ -65,6 +73,7 @@ const Map = () => {
 
     return () => {
       resetMap();
+      stopPdrTracking(); // Cleanup tracking when component unmounts
     };
   }, [params.x, params.y]);
 
@@ -184,6 +193,14 @@ const Map = () => {
 
   return (
     <View style={styles.container}>
+      <View style={styles.controls}>
+        <Button 
+          title={isTracking ? "Stop Tracking" : "Start Tracking"}
+          onPress={() => isTracking ? stopPdrTracking() : startPdrTracking()}
+          color={isTracking ? "#ff4444" : "#4CAF50"}
+        />
+      </View>
+
       <ScrollView
         contentContainerStyle={styles.scrollContainer}
         showsVerticalScrollIndicator={false}
@@ -269,6 +286,15 @@ const Map = () => {
                     Distance: {Math.round(distance)} units
                   </Text>
                 )}
+              </View>
+            )}
+
+            {isTracking && (
+              <View style={styles.positionInfo}>
+                <Text style={styles.infoTitle}>PDR Data</Text>
+                <Text style={styles.infoText}>Steps: {pdrData.stepCount}</Text>
+                <Text style={styles.infoText}>Heading: {pdrData.heading.toFixed(1)}°</Text>
+                <Text style={styles.infoText}>Step Length: {pdrData.stepLength.toFixed(2)}m</Text>
               </View>
             )}
           </View>
@@ -390,6 +416,15 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 16,
     fontWeight: 'bold',
+  },
+  controls: {
+    position: 'absolute',
+    top: 20,
+    left: 20,
+    zIndex: 10,
+    backgroundColor: 'rgba(255,255,255,0.8)',
+    borderRadius: 8,
+    padding: 8,
   },
 });
 
