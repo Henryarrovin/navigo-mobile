@@ -11,7 +11,17 @@ export default function RootLayout() {
     <Provider store={store}>
       <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
         <Stack>
-          <Slot />
+          <Stack.Screen 
+            name="(tabs)" 
+            options={{
+              headerShown: true,
+              title: 'NaviGo',
+              headerStyle: {
+                backgroundColor: colorScheme === 'dark' ? DarkTheme.colors.card : DefaultTheme.colors.card,
+              },
+              headerTintColor: colorScheme === 'dark' ? DarkTheme.colors.text : DefaultTheme.colors.text,
+            }} 
+          />
         </Stack>
       </ThemeProvider>
     </Provider>
