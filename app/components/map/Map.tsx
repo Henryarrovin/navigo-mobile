@@ -1,4 +1,5 @@
 import { RouteProp, useRoute } from "@react-navigation/native";
+import { useLocalSearchParams } from "expo-router";
 import { Dimensions, ScrollView, StyleSheet, Text, View } from "react-native";
 import Svg, { Path, Line, G, Circle } from 'react-native-svg';
 
@@ -14,8 +15,9 @@ type RootTabParamList = {
 type MapRouteProp = RouteProp<RootTabParamList, 'Map'>;
 
 const Map = () => {
-    const route = useRoute<MapRouteProp>();
-    const { x, y, title } = route.params || {};
+    const params = useLocalSearchParams();
+    // const route = useRoute<MapRouteProp>();
+    // const { x, y, title } = route.params || {};
 
     const { width } = Dimensions.get('window');
     const svgWidth = width - 40;  // SVG width based on screen width
@@ -113,10 +115,10 @@ const Map = () => {
                         <Path d="M400,175 L400,225" stroke="#000" strokeWidth="3" strokeDasharray="5,5"/>
                         <Path d="M400,325 L400,375" stroke="#000" strokeWidth="3" strokeDasharray="5,5"/>
                         {/* Product Marker */}
-                        {x && y && (
+                        {params.x && params.y && (
                             <Circle
-                                cx={x}
-                                cy={y}
+                                cx={typeof params.x === 'string' ? parseFloat(params.x) : undefined}
+                                cy={typeof params.y === 'string' ? parseFloat(params.y) : undefined}
                                 r="10"
                                 fill="#ff0000"
                                 stroke="#ffffff"
@@ -124,11 +126,11 @@ const Map = () => {
                             />
                         )}
                     </Svg>
-                    {x && y && (
+                    {params.x && params.y && (
                       <View style={styles.coordinateInfo}>
-                        <Text style={styles.coordinateTitle}>{title || 'Product Location'}</Text>
-                        <Text style={styles.coordinateText}>X Coordinate: {x}</Text>
-                        <Text style={styles.coordinateText}>Y Coordinate: {y}</Text>
+                        <Text style={styles.coordinateTitle}>{params.title || 'Product Location'}</Text>
+                        <Text style={styles.coordinateText}>X Coordinate: {params.x}</Text>
+                        <Text style={styles.coordinateText}>Y Coordinate: {params.y}</Text>
                       </View>
                     )}
                 </View>

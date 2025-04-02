@@ -1,6 +1,11 @@
 export type RootStackParamList = {
-  Home: undefined;
-  CategoryScreen: {
+  '(tabs)': undefined;
+  'map': {
+    x: number;
+    y: number;
+    title: string;
+  };
+  'category/[categoryId]': {
     categoryId: string;
     categoryName: string;
   };

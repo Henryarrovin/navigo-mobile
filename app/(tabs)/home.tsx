@@ -63,10 +63,17 @@ const HomeScreen = () => {
     }
   };
 
+  // const handleCategoryClick = (categoryId: string, categoryName: string) => {
+  //   router.push({ 
+  //     pathname: `/category/[categoryId]`, 
+  //     params: { categoryId, categoryName } 
+  //   });
+  // };
+
   const handleCategoryClick = (categoryId: string, categoryName: string) => {
-    router.push({ 
-      pathname: `/category/[categoryId]`, 
-      params: { categoryId, categoryName } 
+    router.push({
+      pathname: `/category/[categoryId]`,
+      params: { categoryId, categoryName }
     });
   };
 
