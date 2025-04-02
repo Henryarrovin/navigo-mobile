@@ -4,15 +4,17 @@ import { Ionicons } from '@expo/vector-icons';
 export default function TabLayout() {
   return (
     <Tabs screenOptions={{
-      headerTitle: "Navigo",
-      // headerStyle: { backgroundColor: 'black' },
-      // headerTintColor: "#ffffff"
-      // headerShown: false
+      headerShown: false,
+      tabBarStyle: {
+        backgroundColor: '#ffffff'
+      },
+      title: 'Navigo'
     }}>
       <Tabs.Screen
         name="home"
         options={{
           title: 'Home',
+          headerShown: false,
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="home-outline" size={size} color={color} />
           ),
@@ -22,6 +24,7 @@ export default function TabLayout() {
         name="map"
         options={{
           title: 'Map',
+          headerShown: false,
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="map-outline" size={size} color={color} />
           ),
