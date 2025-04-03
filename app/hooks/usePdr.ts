@@ -1,93 +1,108 @@
-import { useEffect } from 'react';
-import { useDispatch } from 'react-redux';
-import { AppDispatch } from '../features/store';
+import { useEffect, useRef, useState } from 'react';
+import { Subscription, useDispatch, useSelector } from 'react-redux';
+import { AppDispatch, RootState } from '../features/store';
 import { updateStep, updateHeading, startTracking, stopTracking, updatePositionWithPdr } from '../features/mapSlice';
 import { calculateStepLength, detectSteps } from '../utils/pdrCalculations';
-import { Accelerometer, Gyroscope } from 'expo-sensors';
+import { Accelerometer, Gyroscope, Magnetometer } from 'expo-sensors';
+
+const lowPass = (current: number, last: number, alpha: number) => alpha * current + (1 - alpha) * last;
 
 const usePdr = () => {
   const dispatch = useDispatch<AppDispatch>();
+  const isTracking = useSelector((state: RootState) => state.map.isTracking);
+  const [currentHeading, setCurrentHeading] = useState(0);
   
-  let lastAccelerationData: {x: number, y: number, z: number}[] = [];
-  let lastUpdateTime = 0;
-  
-  const startPdrTracking = () => {
-    dispatch(startTracking());
+  const lastAccelerationData = useRef<{x: number, y: number, z: number}[]>([]);
+  const lastSmoothedAcc = useRef({ x: 0, y: 0, z: 0 });
+  const lastUpdateTime = useRef(0);
+
+  const processSensorData = () => {
+    if (lastAccelerationData.current.length === 0) return;
+
+    // Smooth acceleration data
+    const smoothedAcceleration = lastAccelerationData.current.reduce((acc, curr) => ({
+      x: lowPass(curr.x, acc.x, 0.8),
+      y: lowPass(curr.y, acc.y, 0.8),
+      z: lowPass(curr.z, acc.z, 0.8),
+    }), lastSmoothedAcc.current);
+
+    // Detect steps
+    const stepsDetected = detectSteps(lastAccelerationData.current);
+    if (stepsDetected > 0) {
+      const stepLengthMeters = calculateStepLength(lastAccelerationData.current, stepsDetected);
+      
+      dispatch(updateStep({ timestamp: Date.now() }));
+      dispatch(updatePositionWithPdr({ 
+        stepLength: stepLengthMeters,
+        heading: currentHeading,
+      }));
+    }
+
+    // Update for next iteration
+    lastSmoothedAcc.current = smoothedAcceleration;
+    lastAccelerationData.current = [];
+  };
+
+  useEffect(() => {
+    let subscriptions: { remove: () => void }[] = [];
     
-    try {
-      // Start accelerometer
-      Accelerometer.setUpdateInterval(60);
-      const subscription = Accelerometer.addListener(data => {
+    if (isTracking) {
+      // Accelerometer
+      Accelerometer.setUpdateInterval(16);
+      const accSub = Accelerometer.addListener(data => {
         const now = Date.now();
-        lastAccelerationData.push({
+        lastAccelerationData.current.push({
           x: data.x || 0,
           y: data.y || 0,
           z: data.z || 0
         });
         
-        // Process data every 500ms
-        if (now - lastUpdateTime > 500) {
+        if (now - lastUpdateTime.current > 100) {
           processSensorData();
-          lastUpdateTime = now;
+          lastUpdateTime.current = now;
         }
       });
-      
-      // Start gyroscope
+
+      // Magnetometer
+      Magnetometer.setUpdateInterval(100);
+      const magSub = Magnetometer.addListener(data => {
+        if (data.x && data.y) {
+          const heading = Math.atan2(data.y, data.x) * (180 / Math.PI);
+          setCurrentHeading((heading + 360) % 360);
+        }
+      });
+
+      // Gyroscope
       Gyroscope.setUpdateInterval(100);
-      const gyroSubscription = Gyroscope.addListener(data => {
+      const gyroSub = Gyroscope.addListener(data => {
         if (data.z !== null) {
-          const heading = (Math.atan2(data.x, data.y) * 180 / Math.PI + 360) % 360;
-          dispatch(updateHeading({ heading, timestamp: Date.now() }));
+          const dt = 0.1;
+          const alpha = 0.98;
+          const gyroHeading = currentHeading + (data.z * dt);
+          const fusedHeading = alpha * gyroHeading + (1-alpha) * currentHeading;
+          
+          setCurrentHeading((fusedHeading + 360) % 360);
+          dispatch(updateHeading({
+            heading: (fusedHeading + 360) % 360,
+            timestamp: Date.now()
+          }));
         }
       });
-      
-      return () => {
-        subscription.remove();
-        gyroSubscription.remove();
-      };
-    } catch (error) {
-      console.error('Sensor access failed:', error);
-      return mockSensors();
+
+      subscriptions = [accSub, magSub, gyroSub];
     }
+    
+    return () => {
+      subscriptions.forEach(sub => sub.remove());
+    };
+  }, [isTracking, currentHeading]);
+
+  const startPdrTracking = () => {
+    dispatch(startTracking());
   };
   
   const stopPdrTracking = () => {
     dispatch(stopTracking());
-  };
-  
-  const processSensorData = () => {
-    if (lastAccelerationData.length === 0) return;
-    
-    // Detect steps
-    const stepsDetected = detectSteps(lastAccelerationData);
-    if (stepsDetected > 0) {
-      const stepLength = calculateStepLength(lastAccelerationData, stepsDetected);
-      
-      dispatch(updateStep({ timestamp: Date.now() }));
-      dispatch(updatePositionWithPdr({ 
-        stepLength,
-        heading: lastHeading || 0
-      }));
-    }
-    
-    lastAccelerationData = [];
-  };
-  
-  let lastHeading = 0;
-  const mockSensors = () => {
-    const mockInterval = setInterval(() => {
-      lastHeading = (lastHeading + (Math.random() * 10 - 5)) % 360;
-      dispatch(updateHeading({ heading: lastHeading, timestamp: Date.now() }));
-      
-      // Simulate steps every 1.5 seconds
-      dispatch(updateStep({ timestamp: Date.now() }));
-      dispatch(updatePositionWithPdr({ 
-        stepLength: 0.7,
-        heading: lastHeading
-      }));
-    }, 1500);
-    
-    return () => clearInterval(mockInterval);
   };
   
   return {
