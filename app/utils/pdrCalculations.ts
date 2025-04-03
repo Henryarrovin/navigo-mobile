@@ -1,49 +1,61 @@
 import { PathPoint } from "../types/mapTypes";
 
-// Calculate new position based on step length and heading (in degrees)
+const METERS_PER_UNIT = 0.2;
+
+const lowPass = (current: number, last: number, alpha: number) => alpha * current + (1 - alpha) * last;
+
 export function calculateNewPosition(
-  currentPosition: PathPoint, 
-  stepLength: number, 
+  currentPosition: PathPoint,
+  stepLengthMeters: number,
   heading: number
 ): PathPoint {
-  // Convert heading from degrees to radians
   const headingRad = (heading * Math.PI) / 180;
+  const stepLengthUnits = stepLengthMeters / METERS_PER_UNIT;
   
+  // Adjust for map coordinate system (Y might need to be inverted)
   return {
-    x: currentPosition.x + stepLength * Math.sin(headingRad),
-    y: currentPosition.y + stepLength * Math.cos(headingRad)
+    x: currentPosition.x + stepLengthUnits * Math.sin(headingRad),
+    y: currentPosition.y - stepLengthUnits * Math.cos(headingRad)
   };
 }
 
-// Calculate step length based on frequency and acceleration data
 export function calculateStepLength(
-  accelerationData: {x: number, y: number, z: number}[],
+  accelerationData: { x: number; y: number; z: number }[],
   stepFrequency: number
 ): number {
-  // Simple implementation - can be enhanced with more sophisticated algorithms
   const avgAcceleration = accelerationData.reduce((sum, acc) => {
-    return sum + Math.sqrt(acc.x**2 + acc.y**2 + acc.z**2);
+    return sum + Math.sqrt(acc.x ** 2 + acc.y ** 2 + acc.z ** 2);
   }, 0) / accelerationData.length;
-  
-  // Empirical formula to estimate step length based on acceleration
-  return 0.35 + (avgAcceleration * 0.15);
+
+  // Return step length IN METERS (will be converted later)
+  return 0.35 + avgAcceleration * 0.15; // Empirical formula (in meters)
 }
 
-// Detect steps from accelerometer data using peak detection
 export function detectSteps(accelerationData: {x: number, y: number, z: number}[]): number {
-  const threshold = 1.2; // Adjust based on testing
+  const threshold = 1.2;
   let stepCount = 0;
-  let aboveThreshold = false;
-  
-  accelerationData.forEach(acc => {
+  let lastMagnitude = 0;
+  let wasAbove = false;
+  let peakCount = 0;
+  let minPeakDistance = 3; // Minimum samples between steps
+
+  accelerationData.forEach((acc, i) => {
     const magnitude = Math.sqrt(acc.x**2 + acc.y**2 + acc.z**2);
-    if (magnitude > threshold && !aboveThreshold) {
-      stepCount++;
-      aboveThreshold = true;
-    } else if (magnitude <= threshold) {
-      aboveThreshold = false;
+    const smoothed = lowPass(magnitude, lastMagnitude, 0.8);
+    lastMagnitude = smoothed;
+
+    if (smoothed > threshold) {
+      if (!wasAbove && peakCount >= minPeakDistance) {
+        stepCount++;
+        peakCount = 0;
+      }
+      wasAbove = true;
+      peakCount = 0;
+    } else {
+      wasAbove = false;
+      peakCount++;
     }
   });
-  
+
   return stepCount;
 }

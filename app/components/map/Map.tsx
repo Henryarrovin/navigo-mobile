@@ -243,14 +243,26 @@ const Map = () => {
             )}
             
             {/* User Marker */}
-            <Circle
-              cx={userPosition.x}
-              cy={userPosition.y}
-              r="12"
-              fill="#6200ee"
-              stroke="#ffffff"
-              strokeWidth="2"
-            />
+            <G>
+              {/* Direction Arrow */}
+              <Path
+                d="M-10,-15 L0,-25 L10,-15 Z"
+                fill="#6200ee"
+                transform={`
+                  translate(${userPosition.x}, ${userPosition.y})
+                  rotate(${pdrData.heading || 0})
+                `}
+              />
+              {/* User Position Circle */}
+              <Circle
+                cx={userPosition.x}
+                cy={userPosition.y}
+                r="12"
+                fill="#6200ee"
+                stroke="#ffffff"
+                strokeWidth="2"
+              />
+            </G>
             
             {/* Product Marker */}
             {productPosition && (
