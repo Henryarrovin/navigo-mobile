@@ -296,6 +296,9 @@ const HomeScreen = () => {
           styles.listContent,
           products.length === 0 && styles.emptyListContent
         ]}
+        ListHeaderComponent={
+          <Text style={styles.productsTitle}>Products</Text>
+        }
       />
       <ProductModal
         visible={Boolean(selectedProduct)}
@@ -310,6 +313,14 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#D4D4D4',
+  },
+  productsTitle: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    marginTop: 16,
+    marginBottom: 8,
+    paddingHorizontal: 12,
+    color: '#333',
   },
   fullScreenLoader: {
     flex: 1,
@@ -403,9 +414,9 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   sectionTitle: {
-    fontSize: 18,
+    fontSize: 24,
     fontWeight: 'bold',
-    marginBottom: 12,
+    marginBottom: 16,
     color: '#333',
   },
   categoriesContainer: {
