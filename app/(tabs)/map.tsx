@@ -1,11 +1,14 @@
 import { SafeAreaView, StyleSheet, Text, View } from "react-native";
 import Map from "../components/map/Map";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 const MapScreen = () => {
     return (
-      <SafeAreaView style={styles.container}>
-        <Map />
-      </SafeAreaView>
+      <GestureHandlerRootView style={{ flex: 1 }}>
+        <SafeAreaView style={styles.container}>
+          <Map />
+        </SafeAreaView>
+      </GestureHandlerRootView>
     );
 }
 
