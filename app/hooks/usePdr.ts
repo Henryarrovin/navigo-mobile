@@ -48,7 +48,7 @@ const usePdr = () => {
     
     if (isTracking) {
       // Accelerometer
-      Accelerometer.setUpdateInterval(16);
+      Accelerometer.setUpdateInterval(10);
       const accSub = Accelerometer.addListener(data => {
         const now = Date.now();
         lastAccelerationData.current.push({
@@ -64,7 +64,7 @@ const usePdr = () => {
       });
 
       // Magnetometer
-      Magnetometer.setUpdateInterval(100);
+      Magnetometer.setUpdateInterval(50);
       const magSub = Magnetometer.addListener(data => {
         if (data.x && data.y) {
           const heading = Math.atan2(data.y, data.x) * (180 / Math.PI);
@@ -73,7 +73,7 @@ const usePdr = () => {
       });
 
       // Gyroscope
-      Gyroscope.setUpdateInterval(100);
+      Gyroscope.setUpdateInterval(50);
       const gyroSub = Gyroscope.addListener(data => {
         if (data.z !== null) {
           const dt = 0.1;
