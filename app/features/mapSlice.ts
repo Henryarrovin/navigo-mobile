@@ -74,6 +74,7 @@ const initialState: MapState = {
   pdrData: {
     stepCount: 0,
     stepLength: 0.7, // Average step length in meters
+    // stepLength: 1.5,
     heading: 0, // in degrees
   },
 };

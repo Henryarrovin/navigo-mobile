@@ -1,6 +1,6 @@
 import { PathPoint } from "../types/mapTypes";
 
-const METERS_PER_UNIT = 0.2;
+const METERS_PER_UNIT = 0.1;
 
 const lowPass = (current: number, last: number, alpha: number) => alpha * current + (1 - alpha) * last;
 
@@ -28,7 +28,8 @@ export function calculateStepLength(
   }, 0) / accelerationData.length;
 
   // Return step length IN METERS (will be converted later)
-  return 0.35 + avgAcceleration * 0.15; // Empirical formula (in meters)
+  // return 0.35 + avgAcceleration * 0.15; // Empirical formula (in meters)
+  return 0.8 + avgAcceleration * 0.3;
 }
 
 export function detectSteps(accelerationData: {x: number, y: number, z: number}[]): number {
@@ -37,7 +38,8 @@ export function detectSteps(accelerationData: {x: number, y: number, z: number}[
   let lastMagnitude = 0;
   let wasAbove = false;
   let peakCount = 0;
-  let minPeakDistance = 3; // Minimum samples between steps
+  // let minPeakDistance = 3; // Minimum samples between steps
+  let minPeakDistance = 2; // Minimum samples between steps
 
   accelerationData.forEach((acc, i) => {
     const magnitude = Math.sqrt(acc.x**2 + acc.y**2 + acc.z**2);
