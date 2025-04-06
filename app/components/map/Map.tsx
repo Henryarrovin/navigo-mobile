@@ -20,6 +20,7 @@ import { Camera, CameraView } from 'expo-camera';
 import { Ionicons } from '@expo/vector-icons';
 import { useDispatch } from 'react-redux';
 import { setUserPosition } from '@/app/features/mapSlice';
+import Celebration from '../Celebration';
 
 const Map = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -33,6 +34,9 @@ const Map = () => {
   const [scanned, setScanned] = useState(false);
   const [isScanning, setIsScanning] = useState(false);
   const [qrData, setQrData] = useState<string>('');
+
+  const [showCelebration, setShowCelebration] = useState(false);
+  const [toastMessage, setToastMessage] = useState('');
 
   const { startPdrTracking, stopPdrTracking } = usePdr();
   const pdrData = useSelector((state: RootState) => state.map.pdrData);
@@ -112,6 +116,26 @@ const Map = () => {
     } catch (error) {
       Alert.alert('Error', 'Invalid QR code format. Expected "x,y" coordinates.');
     }
+  };
+
+  useEffect(() => {
+    if (productPosition && userPosition) {
+      const dist = calculateDistance(userPosition, productPosition);
+      if (dist < 30) {
+        setShowCelebration(true);
+        setToastMessage('🎉 You found it! Great job! 🎉');
+        stopPdrTracking();
+        setTimeout(() => {
+          setShowCelebration(false);
+          dispatch(resetMap());
+        }, 3000);
+      }
+    }
+  }, [userPosition, productPosition]);
+
+  const handleDismissToast = () => {
+    setShowCelebration(false);
+    setToastMessage('');
   };
 
   const renderGrid = () => {
@@ -389,6 +413,18 @@ const Map = () => {
           </TouchableOpacity>
         </CameraView>
       )}
+
+      <Celebration isActive={showCelebration} />
+    
+      {toastMessage && (
+        <TouchableOpacity
+          style={styles.toast}
+          onPress={handleDismissToast}
+          activeOpacity={0.8}
+        >
+          <Text style={styles.toastText}>{toastMessage}</Text>
+        </TouchableOpacity>
+      )}
     </View>
   );
 };
@@ -550,6 +586,27 @@ const styles = StyleSheet.create({
     borderRadius: 30,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  toast: {
+    position: 'absolute',
+    bottom: 50,
+    alignSelf: 'center',
+    backgroundColor: 'rgba(0,0,0,0.85)',
+    paddingVertical: 14,
+    paddingHorizontal: 28,
+    borderRadius: 25,
+    zIndex: 100,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 6,
+    elevation: 8,
+  },
+  toastText: {
+    color: 'white',
+    fontSize: 18,
+    fontWeight: '600',
+    textAlign: 'center',
   },
 });
 
