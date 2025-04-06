@@ -9,6 +9,6 @@ RUN bun install --frozen-lockfile
 
 COPY . .
 
-EXPOSE 3000
+EXPOSE 8081 19000 19001 19002
 
-CMD ["bun", "run", "start"]
+CMD ["bunx", "expo", "start", "--tunnel"]
