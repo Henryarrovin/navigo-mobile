@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { 
   Dimensions, 
   ScrollView, 
@@ -8,20 +8,31 @@ import {
   TouchableOpacity,
   ActivityIndicator,
   Button,
+  Alert,
 } from 'react-native';
 import Svg, { Path, Line, G, Circle, Polyline } from 'react-native-svg';
 import { useLocalSearchParams } from 'expo-router';
 import useMap from '@/app/hooks/useMap';
 import usePdr from '@/app/hooks/usePdr';
 import { useSelector } from 'react-redux';
-import { RootState } from '@/app/features/store';
+import { AppDispatch, RootState } from '@/app/features/store';
+import { Camera, CameraView } from 'expo-camera';
+import { Ionicons } from '@expo/vector-icons';
+import { useDispatch } from 'react-redux';
+import { setUserPosition } from '@/app/features/mapSlice';
 
 const Map = () => {
+  const dispatch = useDispatch<AppDispatch>();
   const params = useLocalSearchParams();
   const { width } = Dimensions.get('window');
   const svgWidth = width - 40;
   const svgHeight = (svgWidth * 600) / 800;
   const gridSize = 50;
+
+  const [hasPermission, setHasPermission] = useState<boolean | null>(null);
+  const [scanned, setScanned] = useState(false);
+  const [isScanning, setIsScanning] = useState(false);
+  const [qrData, setQrData] = useState<string>('');
 
   const { startPdrTracking, stopPdrTracking } = usePdr();
   const pdrData = useSelector((state: RootState) => state.map.pdrData);
@@ -76,6 +87,32 @@ const Map = () => {
       stopPdrTracking(); // Cleanup tracking when component unmounts
     };
   }, [params.x, params.y]);
+
+  useEffect(() => {
+    (async () => {
+      const { status } = await Camera.requestCameraPermissionsAsync();
+      setHasPermission(status === 'granted');
+    })();
+  }, []);
+
+  const handleBarCodeScanned = ({ data }: { data: string }) => {
+    setScanned(true);
+    setIsScanning(false);
+    setQrData(data);
+    
+    try {
+      const [x, y] = data.split(',').map(Number);
+      if (!isNaN(x) && !isNaN(y)) {
+        const position = { x, y };
+        dispatch(setUserPosition(position));
+        Alert.alert('Success', `Navigating to: ${x}, ${y}`);
+      } else {
+        throw new Error('Invalid coordinates');
+      }
+    } catch (error) {
+      Alert.alert('Error', 'Invalid QR code format. Expected "x,y" coordinates.');
+    }
+  };
 
   const renderGrid = () => {
     const gridLines = [];
@@ -194,11 +231,34 @@ const Map = () => {
   return (
     <View style={styles.container}>
       <View style={styles.controls}>
-        <Button 
+        {/* <Button 
           title={isTracking ? "Stop Tracking" : "Start Tracking"}
           onPress={() => isTracking ? stopPdrTracking() : startPdrTracking()}
           color={isTracking ? "#ff4444" : "#4CAF50"}
-        />
+        /> */}
+          <TouchableOpacity
+            style={[
+              styles.trackingButton,
+              { backgroundColor: isTracking ? '#CCCCCC' : '#4CAF50' }
+            ]}
+            onPress={() => isTracking ? stopPdrTracking() : startPdrTracking()}
+          >
+            <Ionicons 
+              name="rocket" 
+              size={24} 
+              color={isTracking ? '#666666' : 'white'} 
+            />
+          </TouchableOpacity>
+
+        <TouchableOpacity 
+          style={styles.qrButton}
+          onPress={() => {
+            setScanned(false);
+            setIsScanning(true);
+          }}
+        >
+          <Ionicons name="qr-code" size={24} color="white" />
+        </TouchableOpacity>
       </View>
 
       <ScrollView
@@ -312,6 +372,23 @@ const Map = () => {
           </View>
         </View>
       </ScrollView>
+      {isScanning && (
+        <CameraView
+          style={StyleSheet.absoluteFill}
+          facing="back"
+          barcodeScannerSettings={{
+            barcodeTypes: ['qr'],
+          }}
+          onBarcodeScanned={scanned ? undefined : handleBarCodeScanned}
+        >
+          <TouchableOpacity
+            style={styles.closeButton}
+            onPress={() => setIsScanning(false)}
+          >
+            <Ionicons name="close" size={30} color="white" />
+          </TouchableOpacity>
+        </CameraView>
+      )}
     </View>
   );
 };
@@ -437,6 +514,42 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(255,255,255,0.8)',
     borderRadius: 8,
     padding: 8,
+    flexDirection: 'row',
+    justifyContent: 'space-evenly',
+    alignItems: 'center',
+    gap: '30%',
+  },
+  qrButton: {
+    // marginTop: 10,
+    backgroundColor: '#4CAF50',
+    padding: 11,
+    borderRadius: 30,
+    alignSelf: 'center',
+  },
+  closeButton: {
+    position: 'absolute',
+    top: 40,
+    right: 20,
+    backgroundColor: 'rgba(0,0,0,0.6)',
+    padding: 10,
+    borderRadius: 30,
+  },
+  qrFrame: {
+    position: 'absolute',
+    top: '25%',
+    left: '25%',
+    width: '50%',
+    height: '50%',
+    borderWidth: 2,
+    borderColor: 'rgba(255, 255, 0, 0.7)',
+    backgroundColor: 'transparent',
+    borderRadius: 10,
+  },
+  trackingButton: {
+    padding: 12,
+    borderRadius: 30,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
 
