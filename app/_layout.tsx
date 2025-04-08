@@ -1,4 +1,4 @@
-import { Slot, Stack } from 'expo-router';
+import { Stack } from 'expo-router';
 import { Provider } from 'react-redux';
 import { store } from './features/store';
 import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';

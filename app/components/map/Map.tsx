@@ -7,7 +7,6 @@ import {
   View,
   TouchableOpacity,
   ActivityIndicator,
-  Button,
   Alert,
 } from 'react-native';
 import Svg, { Path, Line, G, Circle, Polyline } from 'react-native-svg';
