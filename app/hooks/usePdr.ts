@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { Subscription, useDispatch, useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../features/store';
 import { updateStep, updateHeading, startTracking, stopTracking, updatePositionWithPdr } from '../features/mapSlice';
 import { calculateStepLength, detectSteps } from '../utils/pdrCalculations';

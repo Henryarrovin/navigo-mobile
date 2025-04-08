@@ -1,4 +1,4 @@
-import { SafeAreaView, StyleSheet, Text, View } from "react-native";
+import { SafeAreaView, StyleSheet } from "react-native";
 import Map from "../components/map/Map";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 
