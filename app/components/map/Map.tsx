@@ -62,6 +62,13 @@ const Map = () => {
       case 'Main Hall': return '#e1f5fe';
       case 'Room A': return '#e8f5e9';
       case 'Room B': return '#fff3e0';
+      case 'Fast Food': return '#ffee8c';
+      case 'Frozen foods 1': return '#1167b1';
+      case 'Frozen foods 2': return '#1167b1';
+      case "Meat": return '#ee6b6e';
+      case "Dairy": return '#ffccbc';
+      case "Bakery": return '#895129';
+      case "Electronics": return '#acada8';
       default: return '#f5f5f5';
     }
   };
