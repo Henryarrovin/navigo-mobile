@@ -69,6 +69,7 @@ const Map = () => {
       case "Dairy": return '#ffccbc';
       case "Bakery": return '#895129';
       case "Electronics": return '#acada8';
+      case "Juice": return '#FFA500';
       default: return '#f5f5f5';
     }
   };
