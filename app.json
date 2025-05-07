@@ -1,31 +1,22 @@
 {
   "expo": {
-    "name": "pdr-mobile",
-    "slug": "pdr-mobile",
+    "name": "navigo-mobile",
+    "slug": "navigo-mobile",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
-    "scheme": "myapp",
+    "scheme": "navigomobile",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
-      "supportsTablet": true,
-      "infoPlist": {
-        "NSMotionUsageDescription": "This app needs motion sensors to track your movement",
-        "NSLocationWhenInUseUsageDescription": "Location access improves sensor accuracy"
-      }
+      "supportsTablet": true
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "permissions": [
-        "android.permission.ACCESS_COARSE_LOCATION",
-        "android.permission.ACCESS_FINE_LOCATION",
-        "android.permission.BODY_SENSORS"
-      ],
-      "package": "com.navigo.pdrmobile"
+      "edgeToEdgeEnabled": true
     },
     "web": {
       "bundler": "metro",
@@ -42,14 +33,7 @@
           "resizeMode": "contain",
           "backgroundColor": "#ffffff"
         }
-      ],
-      [
-        "expo-sensors",
-        {
-          "motionPermission": "Allow $(PRODUCT_NAME) to access motion sensors for step detection"
-        }
-      ],
-      "expo-location"
+      ]
     ],
     "experiments": {
       "typedRoutes": true

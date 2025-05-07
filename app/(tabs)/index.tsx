@@ -1,23 +1,23 @@
-import React, { useEffect } from 'react';
-import { 
-  ActivityIndicator, 
-  FlatList, 
-  StyleSheet, 
-  Text, 
-  TouchableOpacity, 
-  View,
-  ScrollView,
-  RefreshControl
-} from 'react-native';
-import ProductCard from '../components/home/ProductCard';
-import useProductsAndCategories from '../hooks/useProductsAndCategories';
+import { useIsFocused } from '@react-navigation/native';
 import { useRouter } from 'expo-router';
+import React, { useEffect } from 'react';
+import {
+  ActivityIndicator,
+  FlatList,
+  RefreshControl,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View
+} from 'react-native';
 import { useDispatch } from 'react-redux';
+import ProductCard from '../components/home/ProductCard';
 import { fetchProducts } from '../features/productsSlice';
 import { AppDispatch } from '../features/store';
-import { useIsFocused } from '@react-navigation/native';
-import { IProduct } from '../types/types';
+import useProductsAndCategories from '../hooks/useProductsAndCategories';
 import ProductModal from '../modal/ProductModal';
+import { IProduct } from '../types/types';
 
 const HomeScreen = () => {
   const dispatch = useDispatch<AppDispatch>();

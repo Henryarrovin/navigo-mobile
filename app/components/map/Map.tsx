@@ -1,24 +1,23 @@
-import React, { useEffect, useMemo, useState } from 'react';
-import { 
-  Dimensions, 
-  ScrollView, 
-  StyleSheet, 
-  Text, 
-  View,
-  TouchableOpacity,
-  ActivityIndicator,
-  Alert,
-} from 'react-native';
-import Svg, { Path, Line, G, Circle, Polyline } from 'react-native-svg';
-import { useLocalSearchParams } from 'expo-router';
+import { setUserPosition } from '@/app/features/mapSlice';
+import { AppDispatch, RootState } from '@/app/features/store';
 import useMap from '@/app/hooks/useMap';
 import usePdr from '@/app/hooks/usePdr';
-import { useSelector } from 'react-redux';
-import { AppDispatch, RootState } from '@/app/features/store';
-import { Camera, CameraView } from 'expo-camera';
 import { Ionicons } from '@expo/vector-icons';
-import { useDispatch } from 'react-redux';
-import { setUserPosition } from '@/app/features/mapSlice';
+import { Camera, CameraView } from 'expo-camera';
+import { useLocalSearchParams } from 'expo-router';
+import React, { useEffect, useMemo, useState } from 'react';
+import {
+  ActivityIndicator,
+  Alert,
+  Dimensions,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
+import Svg, { Circle, G, Line, Path, Polyline } from 'react-native-svg';
+import { useDispatch, useSelector } from 'react-redux';
 import Celebration from '../Celebration';
 
 const Map = () => {
@@ -219,7 +218,7 @@ const Map = () => {
   };
 
   const renderZones = useMemo(() => {
-    return zones.map(zone => (
+    return zones.map((zone: any) => (
       <Path
         key={zone._id}
         d={zone.svgPath}
@@ -231,8 +230,8 @@ const Map = () => {
   }, [zones]);
 
   const renderConnections = useMemo(() => {
-    return zones.flatMap(zone => 
-      zone.adjacentZones.map(connection => (
+    return zones.flatMap((zone: any) => 
+      zone.adjacentZones.map((connection: any) => (
         <Line
           key={`${zone._id}-${connection.zone}`}
           x1={connection.connectionPoints.from.x}
@@ -325,7 +324,7 @@ const Map = () => {
             {/* Path */}
             {path.length > 0 && (
               <Polyline
-                points={path.map(p => `${p.x},${p.y}`).join(' ')}
+                points={path.map((p: any) => `${p.x},${p.y}`).join(' ')}
                 fill="none"
                 stroke="#6200ee"
                 strokeWidth="4"

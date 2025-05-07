@@ -1,7 +1,7 @@
-import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import apiService from '@/services/apiService';
-import { RootState } from './store';
+import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { calculateNewPosition } from '../utils/pdrCalculations';
+import { RootState } from './store';
 
 interface PathPoint {
   x: number;
@@ -83,7 +83,7 @@ export const fetchZones = createAsyncThunk<Zone[]>(
   'map/fetchZones',
   async (_, { rejectWithValue }) => {
     try {
-      const response = await apiService.get('/map/zones');
+      const response = await apiService.get<Zone[]>('/map/zones');
       return response.data;
     } catch (error: any) {
       return rejectWithValue(error.response?.data?.message || 'Failed to fetch zones');
@@ -95,7 +95,7 @@ export const findPath = createAsyncThunk<PathResponse, { start: PathPoint; end: 
   'map/findPath',
   async ({ start, end }, { rejectWithValue }) => {
     try {
-      const response = await apiService.post('/map/path', { start, end });
+      const response = await apiService.post<PathResponse>('/map/path', { start, end });
       return response.data;
     } catch (error: any) {
       return rejectWithValue(error.response?.data?.message || 'Failed to find path');

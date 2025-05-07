@@ -1,11 +1,11 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { ICategory } from '../types/types';
 import apiService from '@/services/apiService';
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import { ICategory } from '../types/types';
 
 export const fetchCategories = createAsyncThunk<ICategory[]>(
   'categories/fetchCategories',
   async () => {
-    const response = await apiService.get('/categories');
+    const response = await apiService.get<ICategory[]>('/categories');
     return response.data;
   }
 );

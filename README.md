@@ -2,7 +2,6 @@
 ## Indoor Navigation / Positioning System Mobile App
 
 ![React Native](https://img.shields.io/badge/React%20Native-Mobile-blue?logo=react)
-![Bun](https://img.shields.io/badge/Bun-Package%20Manager-ff69b4?logo=bun)
 ![Expo](https://img.shields.io/badge/Expo-Framework-000020?logo=expo)
 ![Redux](https://img.shields.io/badge/State_Management-Redux-764ABC?logo=redux)
 ![TypeScript](https://img.shields.io/badge/TypeScript-Supported-blue?logo=typescript)

@@ -1,8 +1,9 @@
 import axios from "axios";
-import { API_BASE_URL } from "@env";
+// import { API_BASE_URL } from "@env";
 
 // const API_BASE_URL = "http://192.168.0.106:8080/api";
-// const API_BASE_URL = "http://192.168.137.178:8080/api";
+// home
+const API_BASE_URL = "http://192.168.0.110:8080/api";
 
 const apiService = axios.create({
   baseURL: API_BASE_URL,

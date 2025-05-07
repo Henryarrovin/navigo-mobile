@@ -1,6 +1,6 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { IProduct } from '../types/types';
 import apiService from '@/services/apiService';
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import { IProduct } from '../types/types';
 
 interface FetchProductsArgs {
   page: number;
@@ -47,7 +47,7 @@ export const fetchProducts = createAsyncThunk(
   'products/fetchProducts',
   async ({ page, limit }: FetchProductsArgs, { rejectWithValue }) => {
     try {
-      const response = await apiService.get(`/products?page=${page}&limit=${limit}`);
+      const response: any = await apiService.get<FetchProductsArgs>(`/products?page=${page}&limit=${limit}`);
       return {
         products: response.data.data,
         pagination: response.data.pagination
@@ -78,9 +78,9 @@ export const fetchProductsByCategory = createAsyncThunk<IProduct[], string>(
 
 export const fetchProductById = createAsyncThunk<ProductResponse, string>(
   'products/fetchProductById',
-  async (productId, { rejectWithValue }) => {
+  async (productId, { rejectWithValue }): Promise<any> => {
     try {
-      const response = await apiService.get(`/products/${productId}`);
+      const response = await apiService.get<ProductResponse>(`/products/${productId}`);
       return {
         product: response.data
       };
